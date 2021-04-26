@@ -6,7 +6,7 @@ import time
 import requests
 from google.cloud import vision
 from meraki_helpers import get_network_id, req
-from plate_detection import detect_text
+from plate_detection import detect_text, detect_labels, detect_text_uri, detect_labels_uri
 
 #Set the environ variable for API key, Org, and Network
 os.environ["MERAKI_API_KEY"] = '595080bbcdf274431859183b10b74721d7207c64'
@@ -38,11 +38,11 @@ def main(org_name, net_name, timestamp):
 
         # Get the live video link. Note that accessing this link requires
         # you to log into the Meraki dashboard
-        video_link = req(f"networks/{net_id}/cameras/{sn}/videoLink").json()
+        #video_link = req(f"networks/{net_id}/cameras/{sn}/videoLink").json()
 
         # Print the retrieved video link response
         # import json; print(json.dumps(video_link, indent=2))
-        print(f"Video link for camera {sn}:\n{video_link['url']}")
+        #print(f"Video link for camera {sn}:\n{video_link['url']}")
 
         # If a timestamp was specified, build it into a query parameter
         # Example timestamp format: 2020-012-31T12:51:52Z
@@ -60,7 +60,8 @@ def main(org_name, net_name, timestamp):
         ).json()
 
         # Print the retrieved snapshot link response
-        # import json; print(json.dumps(snapshot_link, indent=2))
+        #import json
+        #print(json.dumps(snapshot_link["url"], indent=2))
 
         for _ in range(5):
             # It takes some time for the snapshot to be available, usually
@@ -70,6 +71,7 @@ def main(org_name, net_name, timestamp):
             # Perform a low-level GET request to the snapshot URL which does not
             # use the Meraki dashboard API, nor does it require authentication.
             image = requests.get(snapshot_link["url"])
+
 
             # If HTTP code 200 (OK) is returned, quit the loop and continue
             if image.status_code == 200:
@@ -87,6 +89,8 @@ def main(org_name, net_name, timestamp):
 
         #call the plate detection
         detect_text(f'{snapshot_dir}/{sn}.jpg')
+        detect_text_uri(snapshot_link["url"])
+        detect_labels_uri(snapshot_link["url"])
 
 if __name__ == "__main__":
     # Get the org name from the env var; default to DevNet
