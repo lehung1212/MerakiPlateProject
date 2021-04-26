@@ -1,4 +1,6 @@
 import os
+
+#INPUT your google API KEY json file here
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="cloud_api_key.json"
 
 #define the text detection API call, taking in the path of the image:
@@ -16,18 +18,15 @@ def detect_text(path):
 
     response = client.text_detection(image=image)
     texts = response.text_annotations
+
     print('Texts:')
 
     for text in texts:
-        with open("Output.txt", "w") as text_file:
-            text_file.write("\n %s" %text)
-
+        #write the detected text to an output file
+        with open("Output.txt", "a") as text_file:
+            text_file.write('\n"{}"'.format(text.description))
+        #print the detected text to the cmd
         print('\n"{}"'.format(text.description))
-
-        vertices = (['({},{})'.format(vertex.x, vertex.y)
-                    for vertex in text.bounding_poly.vertices])
-
-        print('bounds: {}'.format(','.join(vertices)))
 
     if response.error.message:
         raise Exception(
@@ -36,4 +35,4 @@ def detect_text(path):
                 response.error.message))
 
 #detect_text('snapshots/Q2GV-9GBH-4PC3.jpg')
-detect_text('snapshots/test3.jfif')
+#detect_text('snapshots/test3.jfif')

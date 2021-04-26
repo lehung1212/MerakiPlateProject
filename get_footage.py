@@ -86,7 +86,7 @@ def main(org_name, net_name, timestamp):
         print(f"Snapshot for camera {sn} saved")
 
         #call the plate detection
-        detect_text(f'{snapshots_dir}/{sn}.jpg')
+        detect_text(f'{snapshot_dir}/{sn}.jpg')
 
 if __name__ == "__main__":
     # Get the org name from the env var; default to DevNet
