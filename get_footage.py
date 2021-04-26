@@ -1,11 +1,5 @@
 #!/usr/bin/env python
 
-"""
-Author: Nick Russo
-Purpose: Using the Cisco Meraki REST API to collect video
-footage from MV sense cameras.
-"""
-
 import os
 import sys
 import time
